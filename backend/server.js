@@ -31,7 +31,16 @@ const PORT = process.env.PORT || 3001;
 
 // ─── Security Middleware ────────────────────────────────────────────────────
 app.use(helmet({
-  contentSecurityPolicy: false, // relaxed for demo
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https://*"],
+      connectSrc: ["'self'", "https://generativelanguage.googleapis.com", "*"]
+    }
+  },
   crossOriginEmbedderPolicy: false
 }));
 

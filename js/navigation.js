@@ -171,7 +171,7 @@ async function handleGetRoute() {
       const aiData = await api.getRouteDescription(from, to, preferences);
       renderRouteResult(aiData, {}, preferences);
     } catch {
-      resultEl.innerHTML = `<div class="route-error">⚠️ Unable to calculate route. ${err.message}</div>`;
+      resultEl.innerHTML = `<div class="route-error">⚠️ Unable to calculate route. ${escapeHtml(err.message)}</div>`;
     }
   }
 }
@@ -236,7 +236,11 @@ function renderRouteResult(aiData, route, preferences) {
 }
 
 function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = String(str || '');
-  return div.innerHTML;
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .replace(/\//g, '&#x2F;');
 }

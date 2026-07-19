@@ -48,9 +48,13 @@ function dismissToast(toast) {
 
 // ─── HTML Sanitizer ───────────────────────────────────────────────────────────
 export function sanitizeHTML(str) {
-  const div = document.createElement('div');
-  div.textContent = String(str || '');
-  return div.innerHTML;
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .replace(/\//g, '&#x2F;');
 }
 
 // ─── Time Formatter ───────────────────────────────────────────────────────────
