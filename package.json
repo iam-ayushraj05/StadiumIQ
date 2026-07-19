@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "StadiumIQ Root for Vercel Deployment",
   "type": "module",
+  "scripts": {
+    "test": "npm --prefix backend test",
+    "start": "npm --prefix backend start"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "cors": "^2.8.5",

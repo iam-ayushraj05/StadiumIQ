@@ -359,3 +359,266 @@ test('GET /api/ai/models returns available models list', async () => {
   const data = await res.json();
   assert.ok(Array.isArray(data.available));
 });
+
+test('Security CSP headers are present and hardened', async () => {
+  const res = await fetch(`${BASE_URL}/health`);
+  assert.ok(res.headers.get('content-security-policy') !== null);
+  const csp = res.headers.get('content-security-policy');
+  const scriptSrc = csp.split(';').find(p => p.trim().startsWith('script-src'));
+  if (scriptSrc) {
+    assert.ok(!scriptSrc.includes("'unsafe-inline'"));
+  }
+});
+
+test('CORS headers are correctly configured', async () => {
+  const res = await fetch(`${BASE_URL}/health`, {
+    headers: { 'Origin': 'http://localhost:5500' }
+  });
+  assert.equal(res.headers.get('access-control-allow-origin'), 'http://localhost:5500');
+});
+
+// ─── Uncovered Route / Error Tests ───
+
+test('GET /api/nonexistent returns 404', async () => {
+  const res = await fetch(`${BASE_URL}/api/nonexistent`);
+  assert.equal(res.status, 404);
+  const data = await res.json();
+  assert.ok(data.error);
+});
+
+test('POST with invalid JSON triggers global error handler', async () => {
+  const res = await fetch(`${BASE_URL}/api/operations/incidents`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: '{ invalid-json }'
+  });
+  assert.ok(res.status >= 400);
+});
+
+test('GET /api/navigation/floors returns floor levels list', async () => {
+  const res = await fetch(`${BASE_URL}/api/navigation/floors`);
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.ok(Array.isArray(data.floors));
+});
+
+test('GET /api/navigation/accessibility returns features list', async () => {
+  const res = await fetch(`${BASE_URL}/api/navigation/accessibility`);
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.ok(Array.isArray(data.features));
+});
+
+test('POST /api/navigation/route returns 400 if from or to is missing', async () => {
+  const res = await fetch(`${BASE_URL}/api/navigation/route`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: 'entrance-a'
+    })
+  });
+  assert.equal(res.status, 400);
+});
+
+test('POST /api/navigation/route returns 404 for unknown location', async () => {
+  const res = await fetch(`${BASE_URL}/api/navigation/route`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: 'entrance-a',
+      to: 'unknown-seat'
+    })
+  });
+  assert.equal(res.status, 404);
+});
+
+test('GET /api/crowd/heatmap returns stadium density grid', async () => {
+  const res = await fetch(`${BASE_URL}/api/crowd/heatmap`);
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.ok(Array.isArray(data.heatmap));
+});
+
+test('GET /api/crowd/flow returns crowd transit flow rates', async () => {
+  const res = await fetch(`${BASE_URL}/api/crowd/flow`);
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.ok(Array.isArray(data.flows));
+});
+
+test('POST /api/transport/predict returns 400 if params missing', async () => {
+  const res = await fetch(`${BASE_URL}/api/transport/predict`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      mode: 'shuttle'
+    })
+  });
+  assert.equal(res.status, 400);
+});
+
+test('POST /api/transport/predict returns unavailable if mode is not supported', async () => {
+  const res = await fetch(`${BASE_URL}/api/transport/predict`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      mode: 'walk',
+      destination: 'airport'
+    })
+  });
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.equal(data.available, false);
+});
+
+test('POST /api/operations/incidents returns 400 if required fields are missing', async () => {
+  const res = await fetch(`${BASE_URL}/api/operations/incidents`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'medical'
+    })
+  });
+  assert.equal(res.status, 400);
+});
+
+test('PUT /api/operations/incidents/:id returns 404 for unknown incident', async () => {
+  const res = await fetch(`${BASE_URL}/api/operations/incidents/non-existent-id`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      status: 'resolved'
+    })
+  });
+  assert.equal(res.status, 404);
+});
+
+test('PUT /api/operations/incidents/:id returns 400 for invalid status', async () => {
+  const listRes = await fetch(`${BASE_URL}/api/operations/incidents`);
+  const listData = await listRes.json();
+  const activeIncident = listData.incidents[0];
+  assert.ok(activeIncident);
+
+  const res = await fetch(`${BASE_URL}/api/operations/incidents/${activeIncident.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      status: 'unknown-status'
+    })
+  });
+  assert.equal(res.status, 400);
+});
+
+// ─── AI Chat Fallback / Tool Coverage Tests ───
+
+test('POST /api/ai/chat fallback: shuttle time query', async () => {
+  const res = await fetch(`${BASE_URL}/api/ai/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'When is the next shuttle from Gate A?',
+      stadium: 'nrg',
+      role: 'fan',
+      language: 'en'
+    })
+  });
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.ok(data.response.includes('shuttle') || data.response.includes('Shuttle'));
+});
+
+test('POST /api/ai/chat fallback: parking garage occupancy query', async () => {
+  const res = await fetch(`${BASE_URL}/api/ai/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'Is there parking space in North garage?',
+      stadium: 'nrg',
+      role: 'fan',
+      language: 'en'
+    })
+  });
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.ok(data.response.includes('parking') || data.response.includes('spots'));
+});
+
+test('POST /api/ai/chat fallback: concessions status query', async () => {
+  const res = await fetch(`${BASE_URL}/api/ai/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'Is Food Court A crowded right now?',
+      stadium: 'nrg',
+      role: 'fan',
+      language: 'en'
+    })
+  });
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.ok(data.response.includes('Food Court A') || data.response.includes('wait time'));
+});
+
+test('POST /api/ai/chat fallback: active incidents query for staff', async () => {
+  const res = await fetch(`${BASE_URL}/api/ai/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'List the active operations incidents',
+      stadium: 'nrg',
+      role: 'staff',
+      language: 'en'
+    })
+  });
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.ok(data.response.includes('incidents') || data.response.includes('alerts'));
+});
+
+test('POST /api/ai/chat fallback: emergency exits status query', async () => {
+  const res = await fetch(`${BASE_URL}/api/ai/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'Are emergency exits clear?',
+      stadium: 'nrg',
+      role: 'fan',
+      language: 'en'
+    })
+  });
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.ok(data.response.includes('emergency exit') || data.response.includes('exits'));
+});
+
+test('POST /api/ai/chat fallback: RAG document search query', async () => {
+  const res = await fetch(`${BASE_URL}/api/ai/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'What is the bag policy in the stadium?',
+      stadium: 'nrg',
+      role: 'fan',
+      language: 'en'
+    })
+  });
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.ok(data.response.includes('RAG') || data.response.includes('bag') || data.response.includes('policy'));
+});
+
+test('POST /api/ai/chat fallback: organizer volunteer task card dispatch query', async () => {
+  const res = await fetch(`${BASE_URL}/api/ai/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'operational task cards for Sector 200',
+      stadium: 'nrg',
+      role: 'fan',
+      language: 'en'
+    })
+  });
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.ok(data.response.includes('Gate A') || data.response.includes('volunteer'));
+});
