@@ -46,7 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
 // ─── Backend Check ────────────────────────────────────────────────────────────
 async function checkBackendStatus() {
   try {
-    const res = await fetch('http://localhost:3001/health', { signal: AbortSignal.timeout(3000) });
+    const healthUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:3001/health'
+      : '/health';
+    const res = await fetch(healthUrl, { signal: AbortSignal.timeout(3000) });
     if (res.ok) {
       app.backendAvailable = true;
       updateLiveBadge(true);
