@@ -1,0 +1,72 @@
+[
+  {
+    "id": "prohibited_cameras",
+    "category": "prohibited_items",
+    "title": "Camera and Video Recording Equipment Policy",
+    "content": "Professional cameras with detachable lenses longer than 3 inches (7.6 cm), tripods, monopods, selfie sticks, and professional video recording equipment are strictly prohibited. Action cameras (e.g., GoPros) are permitted for personal use only, provided they do not have extension poles.",
+    "keywords": ["camera", "video", "lens", "tripod", "monopod", "selfie", "gopro", "recording", "professional"]
+  },
+  {
+    "id": "prohibited_bags",
+    "category": "prohibited_items",
+    "title": "Clear Bag Policy",
+    "content": "To ensure public safety, only clear plastic, vinyl, or PVC bags that do not exceed 12x6x12 inches (30.5x15x30.5 cm) are permitted. One-gallon clear plastic freezer bags (Ziploc) are also allowed. Non-clear small clutches/purses are allowed if they do not exceed 4.5x6.5 inches (11.4x16.5 cm). Large backpacks, duffle bags, and coolers are strictly prohibited.",
+    "keywords": ["bag", "backpack", "purse", "clutch", "clear bag", "cooler", "duffle", "size"]
+  },
+  {
+    "id": "prohibited_umbrellas",
+    "category": "prohibited_items",
+    "title": "Umbrellas and Rain Gear",
+    "content": "Umbrellas of any size are strictly prohibited inside the stadium because they obstruct views and pose a safety risk. Fans are encouraged to bring rain ponchos or lightweight rain jackets in the event of inclement weather.",
+    "keywords": ["umbrella", "rain", "weather", "poncho", "jacket"]
+  },
+  {
+    "id": "prohibited_food",
+    "category": "prohibited_items",
+    "title": "Outside Food and Beverage",
+    "content": "Outside food and beverages are not allowed inside the stadium. Exceptions are made for guests with documented medical requirements, dietary needs, or baby formula/food. Empty reusable plastic water bottles (up to 20oz/0.6L) are permitted and can be filled at water fountains inside.",
+    "keywords": ["food", "drink", "beverage", "water", "bottle", "baby", "medical", "dietary"]
+  },
+  {
+    "id": "ticketing_digital",
+    "category": "ticketing",
+    "title": "Digital Ticketing and Re-entry Policy",
+    "content": "All tickets for the FIFA World Cup 2026 are 100% digital and must be accessed via the official FIFA ticketing mobile app. Printed PDFs, paper tickets, and screenshots of barcodes are not accepted at the gates. Once scanned in, re-entry is strictly prohibited. If you exit the stadium, you will not be permitted to return.",
+    "keywords": ["ticket", "digital", "app", "barcode", "screenshot", "pdf", "reentry", "re-entry", "exit"]
+  },
+  {
+    "id": "nrg_gate_a",
+    "category": "stadium_structure",
+    "title": "Gate A Details (Main Entrance)",
+    "content": "Gate A is located on the North-East side of NRG Stadium. It features a wide wheelchair accessibility ramp. Elevators 1 & 2 are situated immediately inside Gate A. Public and family-accessible restrooms are located directly past the main security checkpoint.",
+    "keywords": ["gate a", "entrance", "north-east", "ramp", "elevator", "restroom", "wheelchair", "accessible"]
+  },
+  {
+    "id": "nrg_gate_b",
+    "category": "stadium_structure",
+    "title": "Gate B Details (North-West Loop)",
+    "content": "Gate B is located on the North-West side of NRG Stadium. It provides the closest access to the Stadium Shuttle Loop terminals. Elevator 3 is nearby. The stadium sensory room for neurodivergent guests is located nearby in Section 133.",
+    "keywords": ["gate b", "shuttle", "north-west", "elevator", "sensory", "section 133"]
+  },
+  {
+    "id": "nrg_gate_c",
+    "category": "stadium_structure",
+    "title": "Gate C Details (South Hub)",
+    "content": "Gate C is located on the South side of NRG Stadium. It serves as the primary drop-off point for rideshares (Uber/Lyft) and taxis. Ramp 4 is located here, with direct wheelchair-accessible seating options located in Section 102.",
+    "keywords": ["gate c", "south", "rideshare", "taxi", "ramp 4", "wheelchair", "section 102", "seating"]
+  },
+  {
+    "id": "nrg_medical",
+    "category": "stadium_structure",
+    "title": "Medical Station Locations",
+    "content": "First aid and medical standby stations are located at Section 112 (Level 1, East side) and Section 345 (Level 3, West side). Emergency dispatch teams are active across all concourses. Automated External Defibrillators (AEDs) are mounted near all elevator banks.",
+    "keywords": ["medical", "first aid", "hurt", "doctor", "nurse", "station", "section 112", "section 345", "aed", "defibrillator"]
+  },
+  {
+    "id": "nrg_restrooms",
+    "category": "stadium_structure",
+    "title": "Restroom and Accessibility Ramps",
+    "content": "Wheelchair-accessible family and gender-neutral restrooms are located adjacent to Sections 104, 118, 305, and 328. Main accessibility ramps are located at Gate A (North-East), Gate C (South), and Section 120 (East).",
+    "keywords": ["restroom", "toilet", "washroom", "wc", "ramp", "accessible", "wheelchair", "section 104", "section 118", "section 305", "section 328"]
+  }
+]

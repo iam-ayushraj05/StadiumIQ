@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="StadiumIQ — GenAI-powered smart stadium operations platform for FIFA World Cup 2026. AI navigation, crowd management, multilingual support, and real-time decisions." />
+  <meta name="theme-color" content="#0a0e1a" />
+  <title>StadiumIQ — Smart Stadium AI | FIFA World Cup 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Skip Navigation for Accessibility -->
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- Header -->
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <div class="logo" aria-label="StadiumIQ Home">
+        <span class="logo-icon" aria-hidden="true">⚽</span>
+        <span class="logo-text">Stadium<span class="logo-accent">IQ</span></span>
+      </div>
+      <nav class="nav" role="navigation" aria-label="Primary navigation">
+        <button class="nav-btn active" data-section="home" aria-current="page">Home</button>
+        <button class="nav-btn" data-section="assistant" aria-current="false">AI Assistant</button>
+        <button class="nav-btn" data-section="crowd" aria-current="false">Crowd Intel</button>
+        <button class="nav-btn" data-section="navigate" aria-current="false">Navigate</button>
+        <button class="nav-btn" data-section="transport" aria-current="false">Transport</button>
+        <button class="nav-btn" data-section="sustainability" aria-current="false">Eco</button>
+        <button class="nav-btn" data-section="ops" aria-current="false">Ops Dashboard</button>
+      </nav>
+      <div class="header-right">
+        <div class="live-badge" aria-live="polite" aria-label="System status: Live">
+          <span class="live-dot" aria-hidden="true"></span>LIVE
+        </div>
+        <select class="lang-select" id="langSelect" aria-label="Select language">
+          <option value="en">🇺🇸 EN</option>
+          <option value="es">🇪🇸 ES</option>
+          <option value="fr">🇫🇷 FR</option>
+          <option value="ar">🇸🇦 AR</option>
+          <option value="pt">🇧🇷 PT</option>
+          <option value="zh">🇨🇳 ZH</option>
+          <option value="hi">🇮🇳 HI</option>
+          <option value="de">🇩🇪 DE</option>
+        </select>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+    <button class="nav-btn" data-section="home">Home</button>
+    <button class="nav-btn" data-section="assistant">AI Assistant</button>
+    <button class="nav-btn" data-section="crowd">Crowd Intel</button>
+    <button class="nav-btn" data-section="navigate">Navigate</button>
+    <button class="nav-btn" data-section="transport">Transport</button>
+    <button class="nav-btn" data-section="sustainability">Eco</button>
+    <button class="nav-btn" data-section="ops">Ops Dashboard</button>
+  </div>
+
+  <main id="main-content" role="main">
+
+    <!-- ======= HOME SECTION ======= -->
+    <section class="section active" id="section-home" aria-labelledby="home-heading">
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-bg" aria-hidden="true">
+          <div class="orb orb1"></div>
+          <div class="orb orb2"></div>
+          <div class="orb orb3"></div>
+          <div class="grid-overlay"></div>
+        </div>
+        <div class="hero-content">
+          <div class="hero-badge" role="note">
+            <span aria-hidden="true">🏆</span> FIFA World Cup 2026 — Official AI Partner Platform
+          </div>
+          <h1 id="home-heading" class="hero-title">
+            The Stadium of
+            <span class="gradient-text">Tomorrow,</span>
+            <br />Powered by <span class="gradient-text">GenAI Today</span>
+          </h1>
+          <p class="hero-subtitle">
+            StadiumIQ leverages Generative AI to deliver real-time crowd intelligence, intelligent navigation, multilingual fan support, and sustainable operations — transforming every FIFA World Cup 2026 venue into a smart stadium.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="startAIBtn" aria-label="Launch AI assistant">
+              <span aria-hidden="true">🤖</span> Launch AI Assistant
+            </button>
+            <button class="btn btn-secondary" id="exploreDemoBtn" aria-label="Explore live demo">
+              <span aria-hidden="true">🎯</span> Explore Live Demo
+            </button>
+          </div>
+          <div class="hero-stats" role="list" aria-label="Key statistics">
+            <div class="stat-card" role="listitem">
+              <span class="stat-num" data-target="16">0</span>
+              <span class="stat-label">Host Stadiums</span>
+            </div>
+            <div class="stat-card" role="listitem">
+              <span class="stat-num" data-target="100">0</span><span class="stat-suffix">k+</span>
+              <span class="stat-label">Daily Fans</span>
+            </div>
+            <div class="stat-card" role="listitem">
+              <span class="stat-num" data-target="8">0</span>
+              <span class="stat-label">AI Modules</span>
+            </div>
+            <div class="stat-card" role="listitem">
+              <span class="stat-num" data-target="32">0</span>
+              <span class="stat-label">Languages</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="features-section">
+        <h2 class="section-title">AI-Powered Capabilities</h2>
+        <p class="section-subtitle">Eight intelligent modules working in harmony</p>
+        <div class="features-grid" role="list">
+          <div class="feature-card" role="listitem" tabindex="0" data-module="assistant" aria-label="AI Fan Assistant module">
+            <div class="feature-icon" aria-hidden="true">🤖</div>
+            <h3>AI Fan Assistant</h3>
+            <p>Multilingual GenAI chatbot answering questions about venues, schedules, transport, and amenities in 32 languages.</p>
+            <div class="feature-tag">GenAI Core</div>
+          </div>
+          <div class="feature-card" role="listitem" tabindex="0" data-module="crowd" aria-label="Crowd Intelligence module">
+            <div class="feature-icon" aria-hidden="true">👥</div>
+            <h3>Crowd Intelligence</h3>
+            <p>Real-time density heatmaps, predictive surge alerts, and AI-driven crowd flow optimization across all stadium zones.</p>
+            <div class="feature-tag">Real-time AI</div>
+          </div>
+          <div class="feature-card" role="listitem" tabindex="0" data-module="navigate" aria-label="Smart Navigation module">
+            <div class="feature-icon" aria-hidden="true">🗺️</div>
+            <h3>Smart Navigation</h3>
+            <p>Indoor AI navigation with accessibility routes, live congestion avoidance, and AR-ready pathfinding.</p>
+            <div class="feature-tag">Spatial AI</div>
+          </div>
+          <div class="feature-card" role="listitem" tabindex="0" data-module="transport" aria-label="Transport Optimizer module">
+            <div class="feature-icon" aria-hidden="true">🚌</div>
+            <h3>Transport Optimizer</h3>
+            <p>AI-coordinated shuttle scheduling, parking predictions, and multimodal journey planning.</p>
+            <div class="feature-tag">Logistics AI</div>
+          </div>
+          <div class="feature-card" role="listitem" tabindex="0" data-module="sustainability" aria-label="Eco Intelligence module">
+            <div class="feature-icon" aria-hidden="true">🌱</div>
+            <h3>Eco Intelligence</h3>
+            <p>Carbon footprint tracking, waste management AI, and sustainability dashboards for venue operations.</p>
+            <div class="feature-tag">Green AI</div>
+          </div>
+          <div class="feature-card" role="listitem" tabindex="0" data-module="assistant" aria-label="Accessibility AI module">
+            <div class="feature-icon" aria-hidden="true">♿</div>
+            <h3>Accessibility AI</h3>
+            <p>Dedicated AI routing for differently-abled fans, sign-language AI assistance, and sensory-friendly zone mapping.</p>
+            <div class="feature-tag">Inclusive AI</div>
+          </div>
+          <div class="feature-card" role="listitem" tabindex="0" data-module="crowd" aria-label="Emergency Response module">
+            <div class="feature-icon" aria-hidden="true">🚨</div>
+            <h3>Emergency Response</h3>
+            <p>AI-driven real-time threat detection, automated evacuation routing, and multi-agency coordination alerts.</p>
+            <div class="feature-tag">Safety AI</div>
+          </div>
+          <div class="feature-card" role="listitem" tabindex="0" data-module="assistant" aria-label="Operational Intelligence module">
+            <div class="feature-icon" aria-hidden="true">📊</div>
+            <h3>Operational Intel</h3>
+            <p>AI dashboards for venue staff, GenAI-generated incident reports, and predictive resource allocation.</p>
+            <div class="feature-tag">Ops AI</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= AI ASSISTANT SECTION ======= -->
+    <section class="section" id="section-assistant" aria-labelledby="assistant-heading" hidden>
+      <div class="page-header">
+        <h2 id="assistant-heading"><span aria-hidden="true">🤖</span> StadiumIQ AI Assistant</h2>
+        <p>Your multilingual GenAI companion for FIFA World Cup 2026</p>
+      </div>
+
+      <div class="assistant-layout">
+        <!-- Chat Panel -->
+        <div class="chat-panel" role="region" aria-label="AI chat interface">
+          <div class="chat-header">
+            <div class="ai-avatar" aria-hidden="true">🤖</div>
+            <div>
+              <div class="ai-name">StadiumIQ AI</div>
+              <div class="ai-status" aria-live="polite">
+                <span class="status-dot" aria-hidden="true"></span> Online — Gemini 1.5 Pro powered
+              </div>
+            </div>
+            <div class="chat-actions">
+              <button class="icon-btn" id="clearChat" aria-label="Clear chat history" title="Clear chat">🗑️</button>
+              <button class="icon-btn" id="downloadChat" aria-label="Download chat transcript" title="Download transcript">📥</button>
+            </div>
+          </div>
+
+          <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-label="Chat messages" aria-relevant="additions">
+            <!-- Welcome message injected by JS -->
+          </div>
+
+          <div class="quick-prompts" role="list" aria-label="Suggested questions">
+            <button class="quick-prompt" role="listitem" data-prompt="Where is Gate A and how do I get there from my current location?">📍 Find Gate A</button>
+            <button class="quick-prompt" role="listitem" data-prompt="What are the crowd levels at food courts right now?">👥 Crowd Status</button>
+            <button class="quick-prompt" role="listitem" data-prompt="Show me accessible routes to my seat in Section 114">♿ Accessible Route</button>
+            <button class="quick-prompt" role="listitem" data-prompt="When is the next shuttle to downtown Houston?">🚌 Next Shuttle</button>
+            <button class="quick-prompt" role="listitem" data-prompt="What's the carbon footprint of today's event?">🌱 Carbon Impact</button>
+            <button class="quick-prompt" role="listitem" data-prompt="Translate stadium rules to Spanish">🌐 Translate Rules</button>
+          </div>
+
+          <form class="chat-input-form" id="chatForm" aria-label="Send message to AI">
+            <div class="input-wrapper">
+              <label for="chatInput" class="sr-only">Type your message</label>
+              <textarea
+                id="chatInput"
+                class="chat-input"
+                placeholder="Ask me anything about the stadium, schedule, transport, or accessibility..."
+                rows="1"
+                maxlength="500"
+                aria-label="Chat message input"
+                aria-describedby="charCount"
+              ></textarea>
+              <div id="charCount" class="char-count" aria-live="polite" aria-atomic="true">0/500</div>
+            </div>
+            <div class="input-controls">
+              <select id="responseLanguage" class="lang-select-inline" aria-label="Response language">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="ar">العربية</option>
+                <option value="pt">Português</option>
+                <option value="zh">中文</option>
+                <option value="hi">हिन्दी</option>
+                <option value="de">Deutsch</option>
+              </select>
+              <button type="submit" class="btn btn-primary send-btn" id="sendBtn" aria-label="Send message">
+                Send <span aria-hidden="true">➤</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- AI Config Panel -->
+        <aside class="ai-config-panel" aria-label="AI configuration settings">
+          <h3>AI Configuration</h3>
+
+          <div class="config-group">
+            <label for="apiKeyInput" class="config-label">Gemini API Key</label>
+            <div class="api-key-wrapper">
+              <input
+                type="password"
+                id="apiKeyInput"
+                class="config-input"
+                placeholder="Enter your Gemini API key..."
+                autocomplete="off"
+                aria-describedby="apiKeyHelp"
+              />
+              <button class="icon-btn" id="toggleApiKey" aria-label="Toggle API key visibility">👁️</button>
+            </div>
+            <small id="apiKeyHelp" class="config-hint">Get your key at <a href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer">aistudio.google.com</a></small>
+          </div>
+
+          <div class="config-group">
+            <label for="stadiumSelect" class="config-label">Active Stadium</label>
+            <select id="stadiumSelect" class="config-input" aria-label="Select stadium">
+              <option value="nrg">NRG Stadium — Houston</option>
+              <option value="sofi">SoFi Stadium — LA</option>
+              <option value="metlife">MetLife — New York/NJ</option>
+              <option value="att">AT&T Stadium — Dallas</option>
+              <option value="arrowhead">Arrowhead — Kansas City</option>
+              <option value="lincoln">Lincoln Financial — Philadelphia</option>
+              <option value="levis">Levi's Stadium — San Francisco</option>
+              <option value="bmo">BMO Field — Toronto</option>
+            </select>
+          </div>
+
+          <div class="config-group">
+            <label for="roleSelect" class="config-label">Your Role</label>
+            <select id="roleSelect" class="config-input" aria-label="Select your role">
+              <option value="fan">Fan / Visitor</option>
+              <option value="staff">Venue Staff</option>
+              <option value="volunteer">Volunteer</option>
+              <option value="organizer">Event Organizer</option>
+              <option value="media">Media / Press</option>
+            </select>
+          </div>
+
+          <div class="config-group">
+            <label for="tempRange" class="config-label">
+              AI Creativity: <span id="tempVal">0.7</span>
+            </label>
+            <input type="range" id="tempRange" class="range-input" min="0" max="1" step="0.1" value="0.7" aria-label="AI temperature/creativity level" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0.7" />
+          </div>
+
+          <div class="config-group">
+            <div class="toggle-row">
+              <label for="streamToggle" class="config-label">Streaming Response</label>
+              <button class="toggle-btn active" id="streamToggle" role="switch" aria-checked="true" aria-label="Toggle streaming response">ON</button>
+            </div>
+          </div>
+
+          <div class="config-group" style="margin-top: 10px; border-top: 1px solid var(--border-glass); padding-top: 14px;">
+            <label class="config-label">🕵️ Agentic Workflow Log</label>
+            <div id="agenticWorkflowLog" class="agentic-log-box" style="font-family: monospace; font-size: 11px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: var(--border-radius-sm); padding: 12px; max-height: 150px; overflow-y: auto; color: var(--color-cyan); display: flex; flex-direction: column; gap: 6px;">
+              <span style="color: var(--color-text-muted); font-style: italic;">No query processed yet.</span>
+            </div>
+          </div>
+
+          <div class="ai-stats-mini" aria-label="AI session statistics">
+            <div class="mini-stat">
+              <span class="mini-stat-num" id="totalMessages">0</span>
+              <span class="mini-stat-label">Messages</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-stat-num" id="totalTokens">0</span>
+              <span class="mini-stat-label">Est. Tokens</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-stat-num" id="avgResponse">—</span>
+              <span class="mini-stat-label">Avg. Time</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ======= CROWD INTELLIGENCE SECTION ======= -->
+    <section class="section" id="section-crowd" aria-labelledby="crowd-heading" hidden>
+      <div class="page-header">
+        <h2 id="crowd-heading"><span aria-hidden="true">👥</span> Crowd Intelligence</h2>
+        <p>Real-time AI-powered crowd monitoring and density management</p>
+      </div>
+
+      <div class="crowd-layout">
+        <div class="crowd-map-container" role="region" aria-label="Stadium crowd density map">
+          <div class="map-header">
+            <h3>NRG Stadium — Live Heatmap</h3>
+            <div class="map-controls">
+              <button class="map-btn active" id="viewHeatmap" aria-pressed="true">Heatmap</button>
+              <button class="map-btn" id="viewFlow" aria-pressed="false">Flow</button>
+              <button class="map-btn" id="viewZones" aria-pressed="false">Zones</button>
+            </div>
+          </div>
+          <div class="stadium-map" id="stadiumMap" aria-label="Interactive stadium map showing crowd density" role="img">
+            <div class="map-inner" id="mapInner">
+              <!-- Zones rendered by JS -->
+            </div>
+            <div class="map-legend" aria-label="Density legend">
+              <span class="legend-item low">Low</span>
+              <span class="legend-item med">Medium</span>
+              <span class="legend-item high">High</span>
+              <span class="legend-item critical">Critical</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="crowd-sidebar" role="complementary" aria-label="Crowd alerts and statistics">
+          <div class="alerts-panel" aria-label="Live alerts">
+            <h3>🚨 Live Alerts <span class="badge" id="alertCount" aria-label="3 active alerts">3</span></h3>
+            <div id="alertsList" role="list" aria-label="Alert list">
+              <!-- Alerts rendered by JS -->
+            </div>
+          </div>
+
+          <div class="crowd-stats" aria-label="Crowd statistics">
+            <h3>Stadium Stats</h3>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value" id="totalCapacity">72,220</div>
+                <div class="stat-label">Total Capacity</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" id="currentAttendance">68,450</div>
+                <div class="stat-label">Current Attendance</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" id="occupancyRate">94.8%</div>
+                <div class="stat-label">Occupancy</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" id="crowdFlow">+1,200/hr</div>
+                <div class="stat-label">Inflow Rate</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ai-recommendation" role="region" aria-label="AI recommendations" aria-live="polite">
+            <h3>🤖 AI Recommendations</h3>
+            <div id="aiRecommendations">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= NAVIGATE SECTION ======= -->
+    <section class="section" id="section-navigate" aria-labelledby="navigate-heading" hidden>
+      <div class="page-header">
+        <h2 id="navigate-heading"><span aria-hidden="true">🗺️</span> Smart Navigation</h2>
+        <p>AI-powered indoor navigation with accessibility-first routing</p>
+      </div>
+
+      <div class="nav-layout">
+        <div class="nav-controls" role="region" aria-label="Navigation controls">
+          <div class="nav-form">
+            <div class="form-group">
+              <label for="navFrom" class="form-label">From</label>
+              <select id="navFrom" class="config-input" aria-label="Starting location">
+                <option value="entrance-a">Main Entrance A</option>
+                <option value="entrance-b">Entrance B (West)</option>
+                <option value="parking-1">Parking Lot 1</option>
+                <option value="metro">Metro Station Exit</option>
+                <option value="accessibility-drop">Accessibility Drop-off</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="navTo" class="form-label">To</label>
+              <select id="navTo" class="config-input" aria-label="Destination">
+                <option value="seat-114">My Seat — Sec 114, Row F</option>
+                <option value="food-court">Food Court Level 2</option>
+                <option value="restroom-accessible">Accessible Restroom</option>
+                <option value="first-aid">First Aid Station</option>
+                <option value="fan-zone">Fan Experience Zone</option>
+                <option value="media-center">Media Center</option>
+              </select>
+            </div>
+            <div class="nav-options" role="group" aria-label="Route preferences">
+              <label class="checkbox-label">
+                <input type="checkbox" id="accessibleRoute" aria-label="Use accessible route" />
+                ♿ Accessible Route
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="avoidCrowds" checked aria-label="Avoid crowded areas" />
+                👥 Avoid Crowded Areas
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="shortestPath" aria-label="Use shortest path" />
+                ⚡ Shortest Path
+              </label>
+            </div>
+            <button class="btn btn-primary full-width" id="getRouteBtn" aria-label="Get AI-powered navigation route">
+              🤖 Get AI Route
+            </button>
+          </div>
+
+          <div class="route-result" id="routeResult" aria-live="polite" role="region" aria-label="Navigation result">
+            <!-- Route rendered by JS -->
+          </div>
+        </div>
+
+        <div class="nav-map-container" role="region" aria-label="Stadium navigation map">
+          <div class="indoor-map" id="indoorMap" aria-label="Indoor stadium map">
+            <div class="floor-selector" role="group" aria-label="Select floor">
+              <button class="floor-btn active" data-floor="0" aria-pressed="true">G</button>
+              <button class="floor-btn" data-floor="1" aria-pressed="false">1</button>
+              <button class="floor-btn" data-floor="2" aria-pressed="false">2</button>
+              <button class="floor-btn" data-floor="3" aria-pressed="false">3</button>
+            </div>
+            <div class="map-canvas" id="mapCanvas" role="img" aria-label="Stadium floor plan">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= TRANSPORT SECTION ======= -->
+    <section class="section" id="section-transport" aria-labelledby="transport-heading" hidden>
+      <div class="page-header">
+        <h2 id="transport-heading"><span aria-hidden="true">🚌</span> Transport Hub</h2>
+        <p>AI-optimized multimodal transportation for FIFA World Cup 2026</p>
+      </div>
+
+      <div class="transport-grid" role="list" aria-label="Transport options">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="transport-predictor" role="region" aria-label="AI Transport predictor">
+        <h3>🤖 AI Travel Time Predictor</h3>
+        <div class="predictor-controls">
+          <select id="transportMode" class="config-input" aria-label="Select transport mode">
+            <option value="shuttle">Stadium Shuttle</option>
+            <option value="metro">Metro / Subway</option>
+            <option value="rideshare">Rideshare (Uber/Lyft)</option>
+            <option value="walking">Walking</option>
+            <option value="cycling">Cycling</option>
+            <option value="parking">Parking Garage</option>
+          </select>
+          <select id="destination" class="config-input" aria-label="Select destination">
+            <option value="downtown">Downtown Houston</option>
+            <option value="airport">IAH Airport</option>
+            <option value="hotel-district">Hotel District</option>
+            <option value="convention">Convention Center</option>
+            <option value="fan-fest">Fan Fest Site</option>
+          </select>
+          <button class="btn btn-primary" id="predictBtn" aria-label="Predict travel time with AI">
+            🤖 Predict Travel
+          </button>
+        </div>
+        <div id="predictionResult" class="prediction-result" aria-live="polite">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= SUSTAINABILITY SECTION ======= -->
+    <section class="section" id="section-sustainability" aria-labelledby="eco-heading" hidden>
+      <div class="page-header">
+        <h2 id="eco-heading"><span aria-hidden="true">🌱</span> Eco Intelligence</h2>
+        <p>AI-powered sustainability monitoring for a greener FIFA World Cup 2026</p>
+      </div>
+
+      <div class="eco-dashboard">
+        <div class="eco-kpis" role="list" aria-label="Environmental KPIs">
+          <!-- Rendered by JS -->
+        </div>
+
+        <div class="eco-chart-area" role="region" aria-label="Carbon emission chart">
+          <h3>Carbon Emissions — Live</h3>
+          <div class="chart-container" id="ecoChart" aria-label="Bar chart showing carbon emissions by category">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div class="eco-actions" role="region" aria-label="Sustainability actions">
+          <h3>🤖 AI Sustainability Recommendations</h3>
+          <div id="ecoRecommendations" role="list">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= OPS DASHBOARD SECTION ======= -->
+    <section class="section" id="section-ops" aria-labelledby="ops-heading" hidden>
+      <div class="page-header">
+        <h2 id="ops-heading"><span aria-hidden="true">📊</span> Tournament Operations</h2>
+        <p>AI-coordinated incident response and volunteer management</p>
+      </div>
+
+      <div class="ops-layout">
+        <!-- Left Panel: Incident Management Log -->
+        <div class="ops-panel">
+          <h3>🚨 Incident Management Log</h3>
+          <p class="panel-subtitle">Real-time alerts and AI-guided mitigation strategies</p>
+          
+          <div class="ops-actions-header">
+            <button class="btn btn-secondary btn-sm" id="simulateIncidentBtn">
+              ⚡ Trigger Crowd Anomaly
+            </button>
+            <button class="btn btn-secondary btn-sm" id="clearIncidentsBtn">
+              🧹 Clear Resolved
+            </button>
+          </div>
+
+          <div id="incidentsList" class="incidents-list" role="list">
+            <!-- Rendered dynamically by JS -->
+          </div>
+        </div>
+
+        <!-- Right Panel: Volunteer Task Dispatcher -->
+        <div class="ops-panel dispatch-panel">
+          <h3>📋 Volunteer Task Dispatcher</h3>
+          <p class="panel-subtitle">GenAI agent drafting and pushing real-time operations instructions</p>
+
+          <div class="dispatch-form">
+            <div class="form-group">
+              <label for="dispatchSector" class="form-label">Target Sector / Gate</label>
+              <select id="dispatchSector" class="config-input">
+                <option value="Gate A">Gate A (Main Entrance)</option>
+                <option value="Gate B">Gate B (North Entrance)</option>
+                <option value="Gate C">Gate C (East Concourse)</option>
+                <option value="Gate D">Gate D (South Entrance)</option>
+                <option value="Food Court A">Food Court A</option>
+                <option value="Section 108">Section 108</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dispatchTaskType" class="form-label">Task Objective</label>
+              <select id="dispatchTaskType" class="config-input">
+                <option value="crowd_redirect">Crowd Redirection & Flow Management</option>
+                <option value="medical_assist">Medical Assistance Dispatch</option>
+                <option value="debris_cleanup">Eco/Debris Collection Dispatch</option>
+                <option value="accessibility_escort">Accessibility Escort Assist</option>
+                <option value="security_standby">Security Standby Reinforcement</option>
+              </select>
+            </div>
+
+            <button class="btn btn-primary full-width" id="draftDispatchBtn">
+              🤖 Draft Dispatch Instructions
+            </button>
+          </div>
+
+          <div class="dispatch-preview-area">
+            <h4>GenAI Instruction Draft</h4>
+            <div id="dispatchDraftContent" class="dispatch-draft-box">
+              <span class="draft-placeholder">Select parameters and click "Draft Dispatch Instructions" to generate instruction cards...</span>
+            </div>
+            
+            <div class="dispatch-controls" style="display:none; gap:10px; margin-top:16px;">
+              <button class="btn btn-secondary" id="editDraftBtn" style="flex:1;">✏️ Edit</button>
+              <button class="btn btn-primary" id="sendDispatchBtn" style="flex:2;">📤 Push to Volunteers</button>
+            </div>
+          </div>
+
+          <div class="dispatch-history">
+            <h4>Active Dispatch Logs</h4>
+            <div id="dispatchHistoryList" class="dispatch-history-list">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay" aria-hidden="true" role="status" aria-label="Loading">
+    <div class="loading-spinner" aria-hidden="true"></div>
+    <div class="loading-text" id="loadingText">Thinking...</div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="toastContainer" class="toast-container" role="region" aria-label="Notifications" aria-live="polite"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
