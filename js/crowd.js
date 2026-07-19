@@ -34,24 +34,17 @@ function renderHeatmapView(zones) {
 
   mapInner.textContent = '';
 
-  const densityColors = {
-    low: '#06d6a0',
-    medium: '#ffd93d',
-    high: '#ff9f1c',
-    critical: '#e63946'
-  };
-
   // Layout zones in a grid-like stadium shape
   const zoneLayout = [
-    { id: 'seating-north', top: 5, left: 25, width: 50, height: 18 },
-    { id: 'seating-south', top: 77, left: 25, width: 50, height: 18 },
-    { id: 'seating-east', top: 25, left: 77, width: 18, height: 50 },
-    { id: 'seating-west', top: 25, left: 5, width: 18, height: 50 },
-    { id: 'food-court-a', top: 28, left: 25, width: 20, height: 14 },
-    { id: 'food-court-b', top: 28, left: 55, width: 20, height: 14 },
-    { id: 'concourse-l1', top: 44, left: 25, width: 50, height: 12 },
-    { id: 'merchandise', top: 58, left: 30, width: 40, height: 10 },
-    { id: 'main-entrance', top: 92, left: 35, width: 30, height: 7 }
+    { id: 'seating-north', top: 5, left: 25, width: 50, height: 18, arrow: '↑', category: 'seating', catColor: 'var(--color-info)' },
+    { id: 'seating-south', top: 77, left: 25, width: 50, height: 18, arrow: '↓', category: 'seating', catColor: 'var(--color-info)' },
+    { id: 'seating-east', top: 25, left: 77, width: 18, height: 50, arrow: '→', category: 'seating', catColor: 'var(--color-info)' },
+    { id: 'seating-west', top: 25, left: 5, width: 18, height: 50, arrow: '←', category: 'seating', catColor: 'var(--color-info)' },
+    { id: 'food-court-a', top: 28, left: 25, width: 20, height: 14, arrow: '↻', category: 'concessions', catColor: 'var(--color-success)' },
+    { id: 'food-court-b', top: 28, left: 55, width: 20, height: 14, arrow: '↻', category: 'concessions', catColor: 'var(--color-success)' },
+    { id: 'concourse-l1', top: 44, left: 25, width: 50, height: 12, arrow: '↔', category: 'concourse', catColor: 'var(--color-text-secondary)' },
+    { id: 'merchandise', top: 58, left: 30, width: 40, height: 10, arrow: '↻', category: 'merchandise', catColor: 'var(--color-warning)' },
+    { id: 'main-entrance', top: 92, left: 35, width: 30, height: 7, arrow: '↑', category: 'entrance', catColor: 'var(--color-cyan)' }
   ];
 
   // Pitch (center)
@@ -71,15 +64,39 @@ function renderHeatmapView(zones) {
 
     const el = document.createElement('div');
     el.className = `map-zone density-${zone.density}`;
+    
+    // Choose styles depending on current view setting
+    let bg = '';
+    let border = '';
+    let displayText = '';
+
+    if (currentView === 'flow') {
+      const flowRates = { low: '+120/hr', medium: '+480/hr', high: '+850/hr', critical: '+1,200/hr' };
+      const opacity = zone.density === 'critical' ? 0.75 : (zone.density === 'high' ? 0.55 : 0.35);
+      bg = `rgba(79, 70, 229, ${opacity})`;
+      border = `1px solid var(--color-accent)`;
+      displayText = `${layout.arrow} ${flowRates[zone.density]}`;
+    } else if (currentView === 'zones') {
+      bg = layout.catColor;
+      border = `1px solid var(--color-white)`;
+      displayText = layout.category.toUpperCase();
+    } else {
+      // Default: Heatmap View using CSS RGB Variables
+      const opacity = zone.density === 'critical' ? 0.6 : 0.4;
+      bg = `rgba(var(--color-${zone.density}-rgb), ${opacity})`;
+      border = `1px solid var(--color-${zone.density})`;
+      displayText = `${zone.fillPercentage}%`;
+    }
+
     el.style.cssText = `
       position: absolute;
       top: ${layout.top}%;
       left: ${layout.left}%;
       width: ${layout.width}%;
       height: ${layout.height}%;
-      background: ${densityColors[zone.density]}${zone.density === 'critical' ? '99' : '66'};
-      border: 1px solid ${densityColors[zone.density]};
-      border-radius: 4px;
+      background: ${bg};
+      border: ${border};
+      border-radius: 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -95,7 +112,7 @@ function renderHeatmapView(zones) {
 
     const pctEl = document.createElement('div');
     pctEl.style.cssText = 'font-size:11px;color:var(--color-white);font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,0.8);';
-    pctEl.textContent = `${zone.fillPercentage}%`;
+    pctEl.textContent = displayText;
 
     el.appendChild(nameEl);
     el.appendChild(pctEl);

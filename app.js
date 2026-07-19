@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupMobileMenu();
   setupScrollEffects();
   setupLanguageSelector();
+  setupThemeToggle();
   initHome();
 
   // Delay to avoid layout thrash
@@ -237,6 +238,34 @@ function setupLanguageSelector() {
 
     // RTL for Arabic
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  });
+}
+
+// ─── Theme Toggle ─────────────────────────────────────────────────────────────
+function setupThemeToggle() {
+  const themeBtn = document.getElementById('themeToggleBtn');
+  
+  // Load preferred theme
+  const savedTheme = localStorage.getItem('stadiumiq-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  if (themeBtn) {
+    themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    themeBtn.setAttribute('aria-label', savedTheme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode');
+  }
+
+  themeBtn?.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('stadiumiq-theme', newTheme);
+    
+    if (themeBtn) {
+      themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+      themeBtn.setAttribute('aria-label', newTheme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode');
+    }
+    
+    showToast(newTheme === 'dark' ? '🌙 Dark mode active' : '☀️ Light mode active', 'info', 2000);
   });
 }
 
