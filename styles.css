@@ -29,6 +29,11 @@
   --color-danger: #dc2626;       /* Clean Red */
   --color-danger-rgb: 220, 38, 38;
   --color-info: #2563eb;         /* Royal Blue */
+  --color-white: #ffffff;        /* Pure white token */
+  --color-low: #10b981;          /* Low legend */
+  --color-med: #fbbf24;          /* Medium legend */
+  --color-high: #f97316;         /* High legend */
+  --color-critical: #ef4444;     /* Critical legend */
 
   --border-glass: #e2e8f0;       /* Subtle, crisp border */
   --border-focus: var(--color-accent);
@@ -390,7 +395,7 @@ main {
 
 .btn-primary {
   background: var(--color-accent);
-  color: #ffffff;
+  color: var(--color-white);
   box-shadow: var(--shadow-sm);
 }
 
@@ -816,7 +821,7 @@ main {
 
 .message.user .message-content {
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-white);
   border-bottom-right-radius: 2px;
   box-shadow: var(--shadow-sm);
 }
@@ -1205,10 +1210,10 @@ main {
   border-radius: 3px;
 }
 
-.legend-item.low::before { background-color: #10b981; }
-.legend-item.med::before { background-color: #fbbf24; }
-.legend-item.high::before { background-color: #f97316; }
-.legend-item.critical::before { background-color: #ef4444; }
+.legend-item.low::before { background-color: var(--color-low); }
+.legend-item.med::before { background-color: var(--color-med); }
+.legend-item.high::before { background-color: var(--color-high); }
+.legend-item.critical::before { background-color: var(--color-critical); }
 
 @keyframes pulse-critical {
   0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
@@ -1244,7 +1249,7 @@ main {
 .badge {
   font-size: 0.75rem;
   background: var(--color-danger);
-  color: #fff;
+  color: var(--color-white);
   padding: 3px 10px;
   border-radius: 50px;
   font-weight: 700;
@@ -1597,7 +1602,7 @@ main {
   flex-direction: column;
   gap: 6px;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--bg-glass);
   padding: 4px;
   border-radius: var(--border-radius-sm);
   border: 1px solid var(--border-glass);
@@ -2360,7 +2365,7 @@ main {
   transform: translateX(-50%) translateY(6px);
   background: var(--color-text-primary);
   border: 1px solid var(--border-glass);
-  color: #fff;
+  color: var(--color-white);
   padding: 5px 10px;
   font-size: 10px;
   font-weight: 700;
