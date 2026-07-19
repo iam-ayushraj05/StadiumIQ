@@ -20,7 +20,7 @@ function renderFloorPlan(floor) {
   if (!canvas) return;
 
   canvas.textContent = '';
-  canvas.style.cssText = 'position:relative;width:100%;height:100%;background:#0d1117;border-radius:12px;overflow:hidden;';
+  canvas.style.cssText = 'position:relative;width:100%;height:100%;background:var(--color-text-primary);border-radius:var(--border-radius-lg);overflow:hidden;';
 
   const floors = {
     0: {
@@ -47,7 +47,7 @@ function renderFloorPlan(floor) {
         { name: 'ATMs', x: 20, y: 65, w: 15, h: 10, color: '#7b2d8b', icon: '💳' },
         { name: 'Info Desk', x: 42, y: 65, w: 16, h: 10, color: '#4361ee', icon: 'ℹ️' },
         { name: 'Restrooms', x: 65, y: 65, w: 15, h: 10, color: '#4cc9f0', icon: '🚻' },
-        { name: 'Concourse Ring', x: 5, y: 5, w: 90, h: 90, color: 'transparent', border: '#ffffff22', icon: '' }
+        { name: 'Concourse Ring', x: 5, y: 5, w: 90, h: 90, color: 'transparent', border: 'var(--border-glass)', icon: '' }
       ]
     },
     2: {
@@ -75,7 +75,7 @@ function renderFloorPlan(floor) {
 
   // Add floor label
   const label = document.createElement('div');
-  label.style.cssText = 'position:absolute;top:8px;right:12px;color:rgba(255,255,255,0.6);font-size:11px;font-weight:600;z-index:10;';
+  label.style.cssText = 'position:absolute;top:8px;right:12px;color:var(--color-text-muted);font-size:11px;font-weight:600;z-index:10;';
   label.textContent = layout.label;
   canvas.appendChild(label);
 
@@ -111,7 +111,7 @@ function renderFloorPlan(floor) {
 
     if (room.name) {
       const nameEl = document.createElement('div');
-      nameEl.style.cssText = 'font-size:8px;color:rgba(255,255,255,0.85);text-align:center;font-weight:600;word-break:break-word;margin-top:2px;';
+      nameEl.style.cssText = 'font-size:8px;color:var(--color-white);opacity:0.85;text-align:center;font-weight:600;word-break:break-word;margin-top:2px;';
       nameEl.textContent = room.name;
       el.appendChild(nameEl);
     }

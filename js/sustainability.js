@@ -177,7 +177,7 @@ function renderBarChart(container, data) {
 
   // Y-axis label
   const yLabel = document.createElement('div');
-  yLabel.style.cssText = 'font-size:11px;color:rgba(255,255,255,0.5);text-align:center;margin-top:8px;';
+  yLabel.style.cssText = 'font-size:11px;color:var(--color-text-secondary);text-align:center;margin-top:8px;';
   yLabel.textContent = 'Carbon Emissions (kg CO₂ per hour)';
 
   container.appendChild(chart);

@@ -34,6 +34,8 @@
   --color-med: #fbbf24;          /* Medium legend */
   --color-high: #f97316;         /* High legend */
   --color-critical: #ef4444;     /* Critical legend */
+  --color-pitch-green-1: #1a5c2a; /* Pitch dark green */
+  --color-pitch-green-2: #2d8a3e; /* Pitch light green */
 
   --border-glass: #e2e8f0;       /* Subtle, crisp border */
   --border-focus: var(--color-accent);

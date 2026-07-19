@@ -46,7 +46,7 @@ function renderCards(options) {
 
     const icon = document.createElement('div');
     icon.className = 'transport-icon';
-    icon.style.color = option.color || '#4361ee';
+    icon.style.color = option.color || 'var(--color-accent)';
     icon.setAttribute('aria-hidden', 'true');
     icon.textContent = option.icon;
 

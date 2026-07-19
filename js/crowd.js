@@ -57,9 +57,9 @@ function renderHeatmapView(zones) {
   // Pitch (center)
   const pitchEl = document.createElement('div');
   pitchEl.className = 'map-pitch';
-  pitchEl.style.cssText = 'position:absolute;top:25%;left:25%;width:50%;height:50%;border-radius:8px;background:linear-gradient(135deg,#1a5c2a,#2d8a3e);border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;z-index:1;';
+  pitchEl.style.cssText = 'position:absolute;top:25%;left:25%;width:50%;height:50%;border-radius:8px;background:linear-gradient(135deg,var(--color-pitch-green-1),var(--color-pitch-green-2));border:2px solid var(--border-glass);display:flex;align-items:center;justify-content:center;z-index:1;';
   const pitchText = document.createElement('span');
-  pitchText.style.cssText = 'color:rgba(255,255,255,0.4);font-size:12px;font-weight:600;';
+  pitchText.style.cssText = 'color:var(--color-white);opacity:0.4;font-size:12px;font-weight:600;';
   pitchText.textContent = '⚽ PITCH';
   pitchEl.appendChild(pitchText);
   mapInner.appendChild(pitchEl);
@@ -90,11 +90,11 @@ function renderHeatmapView(zones) {
     `;
 
     const nameEl = document.createElement('div');
-    nameEl.style.cssText = 'font-size:9px;color:#fff;font-weight:600;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.8);padding:0 2px;';
+    nameEl.style.cssText = 'font-size:9px;color:var(--color-white);font-weight:600;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.8);padding:0 2px;';
     nameEl.textContent = zone.name.replace('Concourse Level ', 'L').replace('Seating — ', '');
 
     const pctEl = document.createElement('div');
-    pctEl.style.cssText = 'font-size:11px;color:#fff;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,0.8);';
+    pctEl.style.cssText = 'font-size:11px;color:var(--color-white);font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,0.8);';
     pctEl.textContent = `${zone.fillPercentage}%`;
 
     el.appendChild(nameEl);
@@ -132,7 +132,7 @@ function renderFallbackMap() {
   if (!mapInner) return;
   mapInner.textContent = '';
   const fallbackDiv = document.createElement('div');
-  fallbackDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.5);';
+  fallbackDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;color:var(--color-text-secondary);';
   fallbackDiv.textContent = '📡 Connecting to live feed...';
   mapInner.appendChild(fallbackDiv);
 }

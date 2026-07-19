@@ -115,7 +115,7 @@ function updateCharCount(len) {
   const el = getEl('charCount');
   if (el) {
     el.textContent = `${len}/500`;
-    el.style.color = len > 450 ? '#ff6b6b' : len > 350 ? '#ffd93d' : '';
+    el.style.color = len > 450 ? 'var(--color-danger)' : len > 350 ? 'var(--color-warning)' : '';
   }
 }
 
@@ -163,7 +163,7 @@ async function handleSend(e) {
       data.agentExecution.steps.forEach(step => {
         const stepDiv = document.createElement('div');
         stepDiv.className = 'agent-log-step';
-        stepDiv.style.cssText = 'margin-bottom: 4px; padding-bottom: 2px; border-bottom: 1px dashed rgba(255,255,255,0.03); line-height: 1.3;';
+        stepDiv.style.cssText = 'margin-bottom: 4px; padding-bottom: 2px; border-bottom: 1px dashed var(--border-glass); line-height: 1.3;';
         stepDiv.textContent = step;
         logBox.appendChild(stepDiv);
       });
