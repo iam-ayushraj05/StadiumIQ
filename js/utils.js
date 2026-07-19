@@ -104,3 +104,73 @@ export function debounce(fn, delay) {
 export function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
+
+export function renderMarkdownToElement(container, text) {
+  container.textContent = '';
+  const lines = (text || '').split('\n');
+  
+  let currentList = null;
+
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+
+    // Check if it is a list item
+    const isBullet = trimmed.startsWith('- ') || trimmed.startsWith('* ');
+    const isNumbered = /^\d+\.\s/.test(trimmed);
+
+    if (isBullet || isNumbered) {
+      if (!currentList) {
+        currentList = document.createElement(isBullet ? 'ul' : 'ol');
+        container.appendChild(currentList);
+      }
+      const li = document.createElement('li');
+      let itemText = trimmed;
+      if (isBullet) {
+        itemText = trimmed.substring(2);
+      } else {
+        itemText = trimmed.replace(/^\d+\.\s/, '');
+      }
+      parseInlineMarkdown(li, itemText);
+      currentList.appendChild(li);
+    } else {
+      currentList = null;
+      if (trimmed === '') {
+        container.appendChild(document.createElement('br'));
+      } else {
+        const p = document.createElement('p');
+        p.style.margin = '4px 0';
+        parseInlineMarkdown(p, trimmed);
+        container.appendChild(p);
+      }
+    }
+  });
+}
+
+function parseInlineMarkdown(element, text) {
+  const regex = /(\*\*.*?\*\*|\*.*?\*)/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    const matchIndex = match.index;
+    const textBefore = text.substring(lastIndex, matchIndex);
+    if (textBefore) {
+      element.appendChild(document.createTextNode(textBefore));
+    }
+    const matchedStr = match[0];
+    if (matchedStr.startsWith('**') && matchedStr.endsWith('**')) {
+      const strong = document.createElement('strong');
+      strong.textContent = matchedStr.slice(2, -2);
+      element.appendChild(strong);
+    } else if (matchedStr.startsWith('*') && matchedStr.endsWith('*')) {
+      const em = document.createElement('em');
+      em.textContent = matchedStr.slice(1, -1);
+      element.appendChild(em);
+    }
+    lastIndex = regex.lastIndex;
+  }
+  const textAfter = text.substring(lastIndex);
+  if (textAfter) {
+    element.appendChild(document.createTextNode(textAfter));
+  }
+}

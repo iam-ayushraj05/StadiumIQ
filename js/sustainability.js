@@ -16,7 +16,11 @@ async function renderEcoKPIs() {
   const container = document.querySelector('.eco-kpis');
   if (!container) return;
 
-  container.innerHTML = '<div class="loading-placeholder">🌱 Loading eco data...</div>';
+  container.textContent = '';
+  const loading = document.createElement('div');
+  loading.className = 'loading-placeholder';
+  loading.textContent = '🌱 Loading eco data...';
+  container.appendChild(loading);
 
   try {
     const data = await api.getEcoMetrics();
@@ -70,7 +74,7 @@ function renderKPICards(m) {
     }
   ];
 
-  container.innerHTML = '';
+  container.textContent = '';
   kpis.forEach(kpi => {
     const card = document.createElement('div');
     card.className = 'eco-kpi-card';
@@ -79,12 +83,28 @@ function renderKPICards(m) {
     const trendIcons = { up: '📈', 'down-good': '📉', stable: '➡️' };
     const trendIcon = trendIcons[kpi.trend] || '➡️';
 
-    card.innerHTML = `
-      <div class="kpi-icon" style="color:${escapeHtml(kpi.color)}" aria-hidden="true">${escapeHtml(kpi.icon)}</div>
-      <div class="kpi-value">${escapeHtml(kpi.value)}</div>
-      <div class="kpi-label">${escapeHtml(kpi.label)}</div>
-      <div class="kpi-sub">${escapeHtml(kpi.sub)} ${trendIcon}</div>
-    `;
+    const icon = document.createElement('div');
+    icon.className = 'kpi-icon';
+    icon.style.color = kpi.color;
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = kpi.icon;
+
+    const value = document.createElement('div');
+    value.className = 'kpi-value';
+    value.textContent = kpi.value;
+
+    const label = document.createElement('div');
+    label.className = 'kpi-label';
+    label.textContent = kpi.label;
+
+    const sub = document.createElement('div');
+    sub.className = 'kpi-sub';
+    sub.textContent = `${kpi.sub} ${trendIcon}`;
+
+    card.appendChild(icon);
+    card.appendChild(value);
+    card.appendChild(label);
+    card.appendChild(sub);
     container.appendChild(card);
   });
 }
@@ -105,7 +125,11 @@ async function renderCarbonChart() {
   const container = document.getElementById('ecoChart');
   if (!container) return;
 
-  container.innerHTML = '<div class="loading-placeholder">📊 Loading chart...</div>';
+  container.textContent = '';
+  const loading = document.createElement('div');
+  loading.className = 'loading-placeholder';
+  loading.textContent = '📊 Loading chart...';
+  container.appendChild(loading);
 
   let chartData;
   try {
@@ -119,7 +143,7 @@ async function renderCarbonChart() {
 }
 
 function renderBarChart(container, data) {
-  container.innerHTML = '';
+  container.textContent = '';
 
   const maxCarbon = Math.max(...data.map(d => d.carbon));
 
@@ -181,7 +205,11 @@ async function renderEcoRecommendations() {
   const container = document.getElementById('ecoRecommendations');
   if (!container) return;
 
-  container.innerHTML = '<div class="loading-placeholder">🤖 AI analyzing sustainability data...</div>';
+  container.textContent = '';
+  const loading = document.createElement('div');
+  loading.className = 'loading-placeholder';
+  loading.textContent = '🤖 AI analyzing sustainability data...';
+  container.appendChild(loading);
 
   try {
     const metricsData = await api.getEcoMetrics();
@@ -197,21 +225,48 @@ function renderEcoRecs(recs) {
   const container = document.getElementById('ecoRecommendations');
   if (!container) return;
 
-  container.innerHTML = '';
+  container.textContent = '';
   recs.forEach(rec => {
     const el = document.createElement('div');
     el.className = 'eco-rec-item';
     el.setAttribute('role', 'listitem');
 
-    el.innerHTML = `
-      <div class="eco-rec-icon" aria-hidden="true">${escapeHtml(rec.emoji || '🌱')}</div>
-      <div class="eco-rec-body">
-        <div class="eco-rec-title">${escapeHtml(rec.title || '')}</div>
-        ${rec.impact ? `<div class="eco-rec-impact">💚 ${escapeHtml(rec.impact)}</div>` : ''}
-        ${rec.action ? `<div class="eco-rec-action">→ ${escapeHtml(rec.action)}</div>` : ''}
-      </div>
-      ${rec.category ? `<span class="eco-badge eco-${escapeHtml(rec.category)}">${escapeHtml(rec.category)}</span>` : ''}
-    `;
+    const icon = document.createElement('div');
+    icon.className = 'eco-rec-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = rec.emoji || '🌱';
+
+    const body = document.createElement('div');
+    body.className = 'eco-rec-body';
+
+    const title = document.createElement('div');
+    title.className = 'eco-rec-title';
+    title.textContent = rec.title || '';
+    body.appendChild(title);
+
+    if (rec.impact) {
+      const impact = document.createElement('div');
+      impact.className = 'eco-rec-impact';
+      impact.textContent = `💚 ${rec.impact}`;
+      body.appendChild(impact);
+    }
+
+    if (rec.action) {
+      const action = document.createElement('div');
+      action.className = 'eco-rec-action';
+      action.textContent = `→ ${rec.action}`;
+      body.appendChild(action);
+    }
+
+    el.appendChild(icon);
+    el.appendChild(body);
+
+    if (rec.category) {
+      const badge = document.createElement('span');
+      badge.className = `eco-badge eco-${rec.category}`;
+      badge.textContent = rec.category;
+      el.appendChild(badge);
+    }
     container.appendChild(el);
   });
 }

@@ -4,7 +4,7 @@
  */
 
 import { api } from './api.js';
-import { showToast } from './utils.js';
+import { showToast, renderMarkdownToElement } from './utils.js';
 
 let activeDraftText = '';
 const dispatchedHistory = [];
@@ -35,7 +35,11 @@ async function renderIncidents() {
   const list = document.getElementById('incidentsList');
   if (!list) return;
 
-  list.innerHTML = '<div class="loading-placeholder">🚨 Fetching active incident logs...</div>';
+  list.textContent = '';
+  const loadingDiv = document.createElement('div');
+  loadingDiv.className = 'loading-placeholder';
+  loadingDiv.textContent = '🚨 Fetching active incident logs...';
+  list.appendChild(loadingDiv);
 
   try {
     const data = await api.getIncidents();
@@ -43,7 +47,11 @@ async function renderIncidents() {
     renderIncidentList(list, sorted);
   } catch (err) {
     console.error('[Operations] Failed to load incidents', err);
-    list.innerHTML = '<div class="loading-placeholder error">❌ Error loading logs. Running in Demo Mode.</div>';
+    list.textContent = '';
+    const errDiv = document.createElement('div');
+    errDiv.className = 'loading-placeholder error';
+    errDiv.textContent = '❌ Error loading logs. Running in Demo Mode.';
+    list.appendChild(errDiv);
     renderIncidentList(list, getFallbackIncidents());
   }
 }
@@ -60,9 +68,12 @@ function sortIncidents(list) {
 }
 
 function renderIncidentList(container, incidentsList) {
-  container.innerHTML = '';
+  container.textContent = '';
   if (incidentsList.length === 0) {
-    container.innerHTML = '<div class="loading-placeholder">✅ All systems normal. No active incidents.</div>';
+    const normalDiv = document.createElement('div');
+    normalDiv.className = 'loading-placeholder';
+    normalDiv.textContent = '✅ All systems normal. No active incidents.';
+    container.appendChild(normalDiv);
     return;
   }
 
@@ -94,21 +105,78 @@ function renderIncidentList(container, incidentsList) {
 
     const isResolved = inc.status === 'resolved';
 
-    card.innerHTML = `
-      <div class="incident-header">
-        <span class="incident-title">⚠️ ${escapeHtml(inc.location)} — ${escapeHtml(inc.type.toUpperCase())}</span>
-        <span class="incident-time">${formatTime(inc.reportedAt)}</span>
-      </div>
-      <div class="incident-desc">${escapeHtml(inc.description)}</div>
-      ${aiRecommendation}
-      <div class="incident-footer">
-        <span class="incident-status-badge status-${inc.status}">${escapeHtml(inc.status)}</span>
-        <div style="display:flex; gap:8px;">
-          ${!isResolved ? `<button class="btn btn-secondary btn-sm resolve-btn" data-id="${inc.id}">Resolve</button>` : ''}
-          ${inc.status === 'active' && inc.type === 'crowd' ? `<button class="btn btn-primary btn-sm dispatch-incident-btn" data-location="${escapeHtml(inc.location)}" data-type="crowd_redirect">Dispatch Volunteers</button>` : ''}
-        </div>
-      </div>
-    `;
+    const header = document.createElement('div');
+    header.className = 'incident-header';
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'incident-title';
+    titleSpan.textContent = `⚠️ ${inc.location} — ${inc.type.toUpperCase()}`;
+
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'incident-time';
+    timeSpan.textContent = formatTime(inc.reportedAt);
+
+    header.appendChild(titleSpan);
+    header.appendChild(timeSpan);
+
+    const desc = document.createElement('div');
+    desc.className = 'incident-desc';
+    desc.textContent = inc.description;
+
+    card.appendChild(header);
+    card.appendChild(desc);
+
+    if (inc.status === 'active') {
+      const aiRec = document.createElement('div');
+      aiRec.className = 'incident-ai-rec';
+      const strong = document.createElement('strong');
+      strong.textContent = 'AI Recommendation:';
+      aiRec.appendChild(document.createTextNode('💡 '));
+      aiRec.appendChild(strong);
+      
+      let recText = '';
+      if (inc.type === 'crowd') {
+        recText = ' Deploy crowd control barriers at Gate C. Open gate B-3 to dissipate the pressure and redirect 10% of flow to concourse level 2.';
+      } else if (inc.type === 'medical') {
+        recText = ' Dispatch Medic Unit 3. Notify nearest first aid station at Section 112 to prepare stretcher. Path: Elevators 2 & 3.';
+      } else {
+        recText = ' Notify technical supervisor on channel 2. Shift manual verification checkers to Gate B entry line.';
+      }
+      aiRec.appendChild(document.createTextNode(recText));
+      card.appendChild(aiRec);
+    }
+
+    const footer = document.createElement('div');
+    footer.className = 'incident-footer';
+
+    const statusBadge = document.createElement('span');
+    statusBadge.className = `incident-status-badge status-${inc.status}`;
+    statusBadge.textContent = inc.status;
+    footer.appendChild(statusBadge);
+
+    const actionsDiv = document.createElement('div');
+    actionsDiv.style.display = 'flex';
+    actionsDiv.style.gap = '8px';
+
+    if (!isResolved) {
+      const resolveBtn = document.createElement('button');
+      resolveBtn.className = 'btn btn-secondary btn-sm resolve-btn';
+      resolveBtn.dataset.id = inc.id;
+      resolveBtn.textContent = 'Resolve';
+      actionsDiv.appendChild(resolveBtn);
+    }
+
+    if (inc.status === 'active' && inc.type === 'crowd') {
+      const dispatchBtn = document.createElement('button');
+      dispatchBtn.className = 'btn btn-primary btn-sm dispatch-incident-btn';
+      dispatchBtn.dataset.location = inc.location;
+      dispatchBtn.dataset.type = 'crowd_redirect';
+      dispatchBtn.textContent = 'Dispatch Volunteers';
+      actionsDiv.appendChild(dispatchBtn);
+    }
+
+    footer.appendChild(actionsDiv);
+    card.appendChild(footer);
 
     // Bind resolve event
     card.querySelector('.resolve-btn')?.addEventListener('click', async function() {
@@ -218,7 +286,16 @@ async function handleDraftInstructions() {
 
   if (!preview) return;
 
-  preview.innerHTML = '<div style="display:flex;align-items:center;gap:8px;"><div class="loading-spinner-sm"></div> Drafting operational card with GenAI...</div>';
+  preview.textContent = '';
+  const loading = document.createElement('div');
+  loading.style.display = 'flex';
+  loading.style.alignItems = 'center';
+  loading.style.gap = '8px';
+  const spinner = document.createElement('div');
+  spinner.className = 'loading-spinner-sm';
+  loading.appendChild(spinner);
+  loading.appendChild(document.createTextNode(' Drafting operational card with GenAI...'));
+  preview.appendChild(loading);
   if (controls) controls.style.display = 'none';
 
   const typeLabels = {
@@ -240,7 +317,7 @@ Format it as a clean list of:
     // Call AI route with organizer context
     const data = await api.chat(promptMessage, { role: 'organizer' });
     activeDraftText = data.response;
-    preview.innerHTML = formatMarkdownToHtml(data.response);
+    renderMarkdownToElement(preview, data.response);
     if (controls) controls.style.display = 'flex';
   } catch (err) {
     console.error('[Dispatch Draft Error]', err);
@@ -262,7 +339,7 @@ ${sector} Main entrance portals, escalators, and adjoining walkways.
 3. Coordinate directly with supervisors to report resolution status.`;
 
     activeDraftText = fallbackText;
-    preview.innerHTML = formatMarkdownToHtml(fallbackText);
+    renderMarkdownToElement(preview, fallbackText);
     if (controls) controls.style.display = 'flex';
     showToast('💡 Draft created using local operations template.', 'info', 3000);
   }
@@ -290,7 +367,11 @@ function handleSendDispatch() {
   const preview = document.getElementById('dispatchDraftContent');
   const controls = document.querySelector('.dispatch-controls');
   if (preview) {
-    preview.innerHTML = '<span class="draft-placeholder">Select parameters and click "Draft Dispatch Instructions" to generate instruction cards...</span>';
+    preview.textContent = '';
+    const placeholder = document.createElement('span');
+    placeholder.className = 'draft-placeholder';
+    placeholder.textContent = 'Select parameters and click "Draft Dispatch Instructions" to generate instruction cards...';
+    preview.appendChild(placeholder);
   }
   if (controls) controls.style.display = 'none';
   activeDraftText = '';
@@ -306,13 +387,13 @@ function handleEditDraft() {
   textarea.style.cssText = 'width:100%; min-height:140px; font-family:monospace; font-size:12px;';
   textarea.value = text;
 
-  preview.innerHTML = '';
+  preview.textContent = '';
   preview.appendChild(textarea);
 
   textarea.focus();
   textarea.addEventListener('blur', () => {
     activeDraftText = textarea.value;
-    preview.innerHTML = formatMarkdownToHtml(activeDraftText);
+    renderMarkdownToElement(preview, activeDraftText);
   });
 }
 
@@ -321,11 +402,18 @@ function renderDispatchHistory() {
   if (!container) return;
 
   if (dispatchedHistory.length === 0) {
-    container.innerHTML = '<div class="draft-placeholder" style="font-size:11px; text-align:center; padding:10px 0;">No active dispatches pushed yet today.</div>';
+    container.textContent = '';
+    const placeholder = document.createElement('div');
+    placeholder.className = 'draft-placeholder';
+    placeholder.style.fontSize = '11px';
+    placeholder.style.textAlign = 'center';
+    placeholder.style.padding = '10px 0';
+    placeholder.textContent = 'No active dispatches pushed yet today.';
+    container.appendChild(placeholder);
     return;
   }
 
-  container.innerHTML = '';
+  container.textContent = '';
   dispatchedHistory.forEach(item => {
     const el = document.createElement('div');
     el.className = 'dispatch-history-item';
@@ -338,13 +426,25 @@ function renderDispatchHistory() {
       security_standby: 'Security Reinforce'
     };
 
-    el.innerHTML = `
-      <div class="dispatch-history-meta">
-        <strong>📍 ${escapeHtml(item.sector)} — ${escapeHtml(typeLabels[item.type])}</strong>
-        <span>Sent at ${escapeHtml(item.timestamp)}</span>
-      </div>
-      <div class="dispatch-history-text">${formatMarkdownToHtml(item.text.slice(0, 150) + (item.text.length > 150 ? '...' : ''))}</div>
-    `;
+    const meta = document.createElement('div');
+    meta.className = 'dispatch-history-meta';
+
+    const strong = document.createElement('strong');
+    strong.textContent = `📍 ${item.sector} — ${typeLabels[item.type]}`;
+
+    const span = document.createElement('span');
+    span.textContent = `Sent at ${item.timestamp}`;
+
+    meta.appendChild(strong);
+    meta.appendChild(span);
+
+    const textDiv = document.createElement('div');
+    textDiv.className = 'dispatch-history-text';
+    const truncatedText = item.text.slice(0, 150) + (item.text.length > 150 ? '...' : '');
+    renderMarkdownToElement(textDiv, truncatedText);
+
+    el.appendChild(meta);
+    el.appendChild(textDiv);
     container.appendChild(el);
   });
 }

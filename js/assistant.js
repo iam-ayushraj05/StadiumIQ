@@ -4,7 +4,7 @@
  */
 
 import { api } from './api.js';
-import { showToast, sanitizeHTML, formatTime } from './utils.js';
+import { showToast, sanitizeHTML, formatTime, renderMarkdownToElement } from './utils.js';
 
 // ─── State ───────────────────────────────────────────────────────────────────
 const state = {
@@ -42,7 +42,7 @@ function setupEventListeners() {
   clearBtn?.addEventListener('click', () => {
     state.history = [];
     const msgs = getEl('chatMessages');
-    if (msgs) msgs.innerHTML = '';
+    if (msgs) msgs.textContent = '';
     renderWelcomeMessage();
     updateStats();
     showToast('Chat cleared', 'info');
@@ -159,7 +159,7 @@ async function handleSend(e) {
     // Render Agentic Workflow execution steps
     const logBox = getEl('agenticWorkflowLog');
     if (logBox && data.agentExecution && data.agentExecution.steps) {
-      logBox.innerHTML = '';
+      logBox.textContent = '';
       data.agentExecution.steps.forEach(step => {
         const stepDiv = document.createElement('div');
         stepDiv.className = 'agent-log-step';
@@ -216,20 +216,33 @@ function appendMessage(role, content, type = '') {
   contentEl.className = 'message-content';
 
   if (role === 'ai') {
-    contentEl.innerHTML = formatAIResponse(content);
+    renderMarkdownToElement(contentEl, content);
   } else {
     const p = document.createElement('p');
     p.textContent = content;
     contentEl.appendChild(p);
   }
 
-  div.innerHTML = `
-    <div class="message-header">
-      <span class="message-avatar" aria-hidden="true">${avatar}</span>
-      <span class="message-name">${sanitizeHTML(name)}</span>
-      <span class="message-time">${sanitizeHTML(time)}</span>
-    </div>
-  `;
+  const header = document.createElement('div');
+  header.className = 'message-header';
+
+  const avatarSpan = document.createElement('span');
+  avatarSpan.className = 'message-avatar';
+  avatarSpan.setAttribute('aria-hidden', 'true');
+  avatarSpan.textContent = avatar;
+
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'message-name';
+  nameSpan.textContent = name;
+
+  const timeSpan = document.createElement('span');
+  timeSpan.className = 'message-time';
+  timeSpan.textContent = time;
+
+  header.appendChild(avatarSpan);
+  header.appendChild(nameSpan);
+  header.appendChild(timeSpan);
+  div.appendChild(header);
   div.appendChild(contentEl);
 
   container.appendChild(div);
@@ -260,13 +273,26 @@ async function appendStreamingMessage(role, content) {
   const contentEl = document.createElement('div');
   contentEl.className = 'message-content streaming';
 
-  div.innerHTML = `
-    <div class="message-header">
-      <span class="message-avatar" aria-hidden="true">🤖</span>
-      <span class="message-name">StadiumIQ AI</span>
-      <span class="message-time">${formatTime(new Date())}</span>
-    </div>
-  `;
+  const header = document.createElement('div');
+  header.className = 'message-header';
+
+  const avatarSpan = document.createElement('span');
+  avatarSpan.className = 'message-avatar';
+  avatarSpan.setAttribute('aria-hidden', 'true');
+  avatarSpan.textContent = '🤖';
+
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'message-name';
+  nameSpan.textContent = 'StadiumIQ AI';
+
+  const timeSpan = document.createElement('span');
+  timeSpan.className = 'message-time';
+  timeSpan.textContent = formatTime(new Date());
+
+  header.appendChild(avatarSpan);
+  header.appendChild(nameSpan);
+  header.appendChild(timeSpan);
+  div.appendChild(header);
   div.appendChild(contentEl);
   container.appendChild(div);
 
@@ -275,13 +301,17 @@ async function appendStreamingMessage(role, content) {
   let displayed = '';
   for (const word of words) {
     displayed += (displayed ? ' ' : '') + word;
-    contentEl.innerHTML = formatAIResponse(displayed) + '<span class="cursor">▋</span>';
+    renderMarkdownToElement(contentEl, displayed);
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    cursor.textContent = '▋';
+    contentEl.appendChild(cursor);
     container.scrollTop = container.scrollHeight;
     await sleep(25 + Math.random() * 20);
   }
 
   contentEl.classList.remove('streaming');
-  contentEl.innerHTML = formatAIResponse(content);
+  renderMarkdownToElement(contentEl, content);
   container.scrollTop = container.scrollHeight;
 }
 
@@ -294,17 +324,34 @@ function appendTypingIndicator() {
   div.className = 'message ai typing-indicator';
   div.id = id;
   div.setAttribute('aria-label', 'AI is typing');
-  div.innerHTML = `
-    <div class="message-header">
-      <span class="message-avatar" aria-hidden="true">🤖</span>
-      <span class="message-name">StadiumIQ AI</span>
-    </div>
-    <div class="message-content">
-      <div class="typing-dots" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-  `;
+  const header = document.createElement('div');
+  header.className = 'message-header';
+
+  const avatarSpan = document.createElement('span');
+  avatarSpan.className = 'message-avatar';
+  avatarSpan.setAttribute('aria-hidden', 'true');
+  avatarSpan.textContent = '🤖';
+
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'message-name';
+  nameSpan.textContent = 'StadiumIQ AI';
+
+  header.appendChild(avatarSpan);
+  header.appendChild(nameSpan);
+
+  const mContent = document.createElement('div');
+  mContent.className = 'message-content';
+
+  const dots = document.createElement('div');
+  dots.className = 'typing-dots';
+  dots.setAttribute('aria-hidden', 'true');
+  for (let i = 0; i < 3; i++) {
+    dots.appendChild(document.createElement('span'));
+  }
+
+  mContent.appendChild(dots);
+  div.appendChild(header);
+  div.appendChild(mContent);
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
   return id;
@@ -321,26 +368,44 @@ function renderWelcomeMessage() {
   const div = document.createElement('div');
   div.className = 'message ai welcome';
   div.setAttribute('role', 'article');
-  div.innerHTML = `
-    <div class="message-header">
-      <span class="message-avatar" aria-hidden="true">🤖</span>
-      <span class="message-name">StadiumIQ AI</span>
-      <span class="message-time">Now</span>
-    </div>
-    <div class="message-content">
-      <p>👋 <strong>Welcome to StadiumIQ!</strong></p>
-      <p>I'm your AI-powered assistant for <strong>FIFA World Cup 2026</strong>. I can help you with:</p>
-      <ul>
-        <li>🗺️ <strong>Navigation</strong> — Find your seat, facilities, and exits</li>
-        <li>👥 <strong>Crowd info</strong> — Avoid congested areas in real-time</li>
-        <li>🚌 <strong>Transport</strong> — Shuttles, metro, rideshare options</li>
-        <li>♿ <strong>Accessibility</strong> — Wheelchair routes, elevators, services</li>
-        <li>🌍 <strong>Multilingual</strong> — Ask me in any language!</li>
-        <li>📋 <strong>Stadium info</strong> — Rules, food, schedules, and more</li>
-      </ul>
-      <p><em>Enter your <strong>Gemini API key</strong> in the configuration panel to enable live AI responses. Or just ask away and I'll use smart fallbacks!</em></p>
-    </div>
-  `;
+  const header = document.createElement('div');
+  header.className = 'message-header';
+
+  const avatarSpan = document.createElement('span');
+  avatarSpan.className = 'message-avatar';
+  avatarSpan.setAttribute('aria-hidden', 'true');
+  avatarSpan.textContent = '🤖';
+
+  const nameSpan = document.createElement('span');
+  nameSpan.className = 'message-name';
+  nameSpan.textContent = 'StadiumIQ AI';
+
+  const timeSpan = document.createElement('span');
+  timeSpan.className = 'message-time';
+  timeSpan.textContent = 'Now';
+
+  header.appendChild(avatarSpan);
+  header.appendChild(nameSpan);
+  header.appendChild(timeSpan);
+
+  const mContent = document.createElement('div');
+  mContent.className = 'message-content';
+
+  const welcomeText = `👋 **Welcome to StadiumIQ!**
+I'm your AI-powered assistant for **FIFA World Cup 2026**. I can help you with:
+- 🗺️ **Navigation** — Find your seat, facilities, and exits
+- 👥 **Crowd info** — Avoid congested areas in real-time
+- 🚌 **Transport** — Shuttles, metro, rideshare options
+- ♿ **Accessibility** — Wheelchair routes, elevators, services
+- 🌍 **Multilingual** — Ask me in any language!
+- 📋 **Stadium info** — Rules, food, schedules, and more
+
+*Enter your **Gemini API key** in the configuration panel to enable live AI responses. Or just ask away and I'll use smart fallbacks!*`;
+
+  renderMarkdownToElement(mContent, welcomeText);
+
+  div.appendChild(header);
+  div.appendChild(mContent);
   container.appendChild(div);
 }
 

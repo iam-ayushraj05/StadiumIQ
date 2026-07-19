@@ -32,7 +32,7 @@ function renderHeatmapView(zones) {
   const mapInner = document.getElementById('mapInner');
   if (!mapInner) return;
 
-  mapInner.innerHTML = '';
+  mapInner.textContent = '';
 
   const densityColors = {
     low: '#06d6a0',
@@ -58,7 +58,10 @@ function renderHeatmapView(zones) {
   const pitchEl = document.createElement('div');
   pitchEl.className = 'map-pitch';
   pitchEl.style.cssText = 'position:absolute;top:25%;left:25%;width:50%;height:50%;border-radius:8px;background:linear-gradient(135deg,#1a5c2a,#2d8a3e);border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;z-index:1;';
-  pitchEl.innerHTML = '<span style="color:rgba(255,255,255,0.4);font-size:12px;font-weight:600;">⚽ PITCH</span>';
+  const pitchText = document.createElement('span');
+  pitchText.style.cssText = 'color:rgba(255,255,255,0.4);font-size:12px;font-weight:600;';
+  pitchText.textContent = '⚽ PITCH';
+  pitchEl.appendChild(pitchText);
   mapInner.appendChild(pitchEl);
 
   // Render zone blobs
@@ -127,7 +130,11 @@ function updateCrowdStats(summary) {
 function renderFallbackMap() {
   const mapInner = document.getElementById('mapInner');
   if (!mapInner) return;
-  mapInner.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.5);">📡 Connecting to live feed...</div>';
+  mapInner.textContent = '';
+  const fallbackDiv = document.createElement('div');
+  fallbackDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.5);';
+  fallbackDiv.textContent = '📡 Connecting to live feed...';
+  mapInner.appendChild(fallbackDiv);
 }
 
 // ─── Alerts ───────────────────────────────────────────────────────────────────
@@ -137,7 +144,7 @@ async function renderAlerts() {
 
   try {
     const data = await api.getCrowdAlerts();
-    alertsList.innerHTML = '';
+    alertsList.textContent = '';
 
     const alerts = data.alerts || getFallbackAlerts();
     alerts.forEach(alert => {
@@ -147,16 +154,35 @@ async function renderAlerts() {
 
       const timeAgo = getTimeAgo(alert.timestamp);
 
-      el.innerHTML = `
-        <div class="alert-content">
-          <div class="alert-message">${escapeHtml(alert.message)}</div>
-          <div class="alert-meta">
-            <span class="alert-zone">${escapeHtml(alert.zone)}</span>
-            <span class="alert-time">${escapeHtml(timeAgo)}</span>
-          </div>
-          <div class="alert-recommendation">${escapeHtml(alert.recommendation)}</div>
-        </div>
-      `;
+      const content = document.createElement('div');
+      content.className = 'alert-content';
+      
+      const message = document.createElement('div');
+      message.className = 'alert-message';
+      message.textContent = alert.message;
+      
+      const meta = document.createElement('div');
+      meta.className = 'alert-meta';
+      
+      const zone = document.createElement('span');
+      zone.className = 'alert-zone';
+      zone.textContent = alert.zone;
+      
+      const time = document.createElement('span');
+      time.className = 'alert-time';
+      time.textContent = timeAgo;
+      
+      meta.appendChild(zone);
+      meta.appendChild(time);
+      
+      const recommendation = document.createElement('div');
+      recommendation.className = 'alert-recommendation';
+      recommendation.textContent = alert.recommendation;
+      
+      content.appendChild(message);
+      content.appendChild(meta);
+      content.appendChild(recommendation);
+      el.appendChild(content);
       alertsList.appendChild(el);
     });
 
@@ -176,12 +202,26 @@ function getFallbackAlerts() {
 function renderFallbackAlerts() {
   const alertsList = document.getElementById('alertsList');
   if (!alertsList) return;
-  alertsList.innerHTML = '';
+  alertsList.textContent = '';
   getFallbackAlerts().forEach(a => {
     const el = document.createElement('div');
     el.className = `alert-item alert-${a.severity}`;
     el.setAttribute('role', 'listitem');
-    el.innerHTML = `<div class="alert-content"><div class="alert-message">${escapeHtml(a.message)}</div><div class="alert-recommendation">${escapeHtml(a.recommendation)}</div></div>`;
+    
+    const content = document.createElement('div');
+    content.className = 'alert-content';
+    
+    const message = document.createElement('div');
+    message.className = 'alert-message';
+    message.textContent = a.message;
+    
+    const recommendation = document.createElement('div');
+    recommendation.className = 'alert-recommendation';
+    recommendation.textContent = a.recommendation;
+    
+    content.appendChild(message);
+    content.appendChild(recommendation);
+    el.appendChild(content);
     alertsList.appendChild(el);
   });
 }
@@ -209,33 +249,78 @@ async function loadAIRecommendations() {
   const container = document.getElementById('aiRecommendations');
   if (!container) return;
 
-  container.innerHTML = '<div class="loading-placeholder">🤖 Analyzing crowd data...</div>';
+  container.textContent = '';
+  const loading = document.createElement('div');
+  loading.className = 'loading-placeholder';
+  loading.textContent = '🤖 Analyzing crowd data...';
+  container.appendChild(loading);
 
   try {
     const zonesData = await api.getCrowdZones();
     const data = await api.analyzeCrowd(zonesData.summary);
     const recs = data.recommendations || getFallbackRecs();
 
-    container.innerHTML = '';
+    container.textContent = '';
     recs.forEach(rec => {
       const el = document.createElement('div');
       el.className = `rec-item priority-${rec.priority || 'medium'}`;
-      el.innerHTML = `
-        <span class="rec-emoji" aria-hidden="true">${escapeHtml(rec.emoji || '💡')}</span>
-        <div class="rec-body">
-          <div class="rec-title">${escapeHtml(rec.title)}</div>
-          <div class="rec-desc">${escapeHtml(rec.description)}</div>
-        </div>
-        <span class="rec-priority badge-${rec.priority || 'medium'}">${escapeHtml(rec.priority || 'medium')}</span>
-      `;
+      
+      const emojiSpan = document.createElement('span');
+      emojiSpan.className = 'rec-emoji';
+      emojiSpan.setAttribute('aria-hidden', 'true');
+      emojiSpan.textContent = rec.emoji || '💡';
+
+      const bodyDiv = document.createElement('div');
+      bodyDiv.className = 'rec-body';
+
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'rec-title';
+      titleDiv.textContent = rec.title;
+
+      const descDiv = document.createElement('div');
+      descDiv.className = 'rec-desc';
+      descDiv.textContent = rec.description;
+
+      bodyDiv.appendChild(titleDiv);
+      bodyDiv.appendChild(descDiv);
+
+      const prioritySpan = document.createElement('span');
+      const priority = rec.priority || 'medium';
+      prioritySpan.className = `rec-priority badge-${priority}`;
+      prioritySpan.textContent = priority;
+
+      el.appendChild(emojiSpan);
+      el.appendChild(bodyDiv);
+      el.appendChild(prioritySpan);
       container.appendChild(el);
     });
   } catch {
-    container.innerHTML = '';
+    container.textContent = '';
     getFallbackRecs().forEach(rec => {
       const el = document.createElement('div');
       el.className = 'rec-item priority-medium';
-      el.innerHTML = `<span class="rec-emoji" aria-hidden="true">${escapeHtml(rec.emoji)}</span><div class="rec-body"><div class="rec-title">${escapeHtml(rec.title)}</div><div class="rec-desc">${escapeHtml(rec.description)}</div></div>`;
+      
+      const emojiSpan = document.createElement('span');
+      emojiSpan.className = 'rec-emoji';
+      emojiSpan.setAttribute('aria-hidden', 'true');
+      emojiSpan.textContent = rec.emoji || '💡';
+
+      const bodyDiv = document.createElement('div');
+      bodyDiv.className = 'rec-body';
+
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'rec-title';
+      titleDiv.textContent = rec.title;
+
+      const descDiv = document.createElement('div');
+      descDiv.className = 'rec-desc';
+      descDiv.textContent = rec.description;
+
+      bodyDiv.appendChild(titleDiv);
+      bodyDiv.appendChild(descDiv);
+
+      el.appendChild(emojiSpan);
+      el.appendChild(bodyDiv);
       container.appendChild(el);
     });
   }

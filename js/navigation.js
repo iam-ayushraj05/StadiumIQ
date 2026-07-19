@@ -19,7 +19,7 @@ function renderFloorPlan(floor) {
   const canvas = document.getElementById('mapCanvas');
   if (!canvas) return;
 
-  canvas.innerHTML = '';
+  canvas.textContent = '';
   canvas.style.cssText = 'position:relative;width:100%;height:100%;background:#0d1117;border-radius:12px;overflow:hidden;';
 
   const floors = {
@@ -152,7 +152,14 @@ async function handleGetRoute() {
   const resultEl = document.getElementById('routeResult');
   if (!resultEl) return;
 
-  resultEl.innerHTML = '<div class="route-loading"><div class="loading-spinner-sm"></div> AI calculating optimal route...</div>';
+  resultEl.textContent = '';
+  const loadingDiv = document.createElement('div');
+  loadingDiv.className = 'route-loading';
+  const spinner = document.createElement('div');
+  spinner.className = 'loading-spinner-sm';
+  loadingDiv.appendChild(spinner);
+  loadingDiv.appendChild(document.createTextNode(' AI calculating optimal route...'));
+  resultEl.appendChild(loadingDiv);
 
   const preferences = { accessibleRoute: accessible, avoidCrowds, shortestPath: shortest };
 
@@ -171,7 +178,11 @@ async function handleGetRoute() {
       const aiData = await api.getRouteDescription(from, to, preferences);
       renderRouteResult(aiData, {}, preferences);
     } catch {
-      resultEl.innerHTML = `<div class="route-error">⚠️ Unable to calculate route. ${escapeHtml(err.message)}</div>`;
+      resultEl.textContent = '';
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'route-error';
+      errorDiv.textContent = `⚠️ Unable to calculate route. ${err.message}`;
+      resultEl.appendChild(errorDiv);
     }
   }
 }
@@ -191,14 +202,33 @@ function renderRouteResult(aiData, route, preferences) {
   // Header
   const header = document.createElement('div');
   header.className = 'route-header';
-  header.innerHTML = `
-    <div class="route-meta">
-      <span class="route-time">⏱ ${escapeHtml(time)}</span>
-      <span class="route-dist">📍 ${escapeHtml(dist)}</span>
-      <span class="route-crowd crowd-${congestion.toLowerCase()}">👥 ${escapeHtml(congestion)} congestion</span>
-      ${preferences?.accessibleRoute ? '<span class="route-accessible">♿ Accessible</span>' : ''}
-    </div>
-  `;
+  const meta = document.createElement('div');
+  meta.className = 'route-meta';
+
+  const timeSpan = document.createElement('span');
+  timeSpan.className = 'route-time';
+  timeSpan.textContent = `⏱ ${time}`;
+
+  const distSpan = document.createElement('span');
+  distSpan.className = 'route-dist';
+  distSpan.textContent = `📍 ${dist}`;
+
+  const crowdSpan = document.createElement('span');
+  crowdSpan.className = `route-crowd crowd-${congestion.toLowerCase()}`;
+  crowdSpan.textContent = `👥 ${congestion} congestion`;
+
+  meta.appendChild(timeSpan);
+  meta.appendChild(distSpan);
+  meta.appendChild(crowdSpan);
+
+  if (preferences?.accessibleRoute) {
+    const accessSpan = document.createElement('span');
+    accessSpan.className = 'route-accessible';
+    accessSpan.textContent = '♿ Accessible';
+    meta.appendChild(accessSpan);
+  }
+
+  header.appendChild(meta);
   container.appendChild(header);
 
   // Steps
@@ -210,14 +240,33 @@ function renderRouteResult(aiData, route, preferences) {
     steps.forEach(step => {
       const li = document.createElement('li');
       li.className = 'route-step';
-      li.innerHTML = `
-        <div class="step-number">${escapeHtml(String(step.step || ''))}</div>
-        <div class="step-content">
-          <div class="step-instruction">${escapeHtml(step.instruction || '')}</div>
-          <div class="step-landmark">📍 ${escapeHtml(step.landmark || '')}</div>
-          ${step.distance ? `<div class="step-distance">${escapeHtml(step.distance)}</div>` : ''}
-        </div>
-      `;
+      const numDiv = document.createElement('div');
+      numDiv.className = 'step-number';
+      numDiv.textContent = String(step.step || '');
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'step-content';
+
+      const instructionDiv = document.createElement('div');
+      instructionDiv.className = 'step-instruction';
+      instructionDiv.textContent = step.instruction || '';
+
+      const landmarkDiv = document.createElement('div');
+      landmarkDiv.className = 'step-landmark';
+      landmarkDiv.textContent = `📍 ${step.landmark || ''}`;
+
+      contentDiv.appendChild(instructionDiv);
+      contentDiv.appendChild(landmarkDiv);
+
+      if (step.distance) {
+        const distanceDiv = document.createElement('div');
+        distanceDiv.className = 'step-distance';
+        distanceDiv.textContent = step.distance;
+        contentDiv.appendChild(distanceDiv);
+      }
+
+      li.appendChild(numDiv);
+      li.appendChild(contentDiv);
       stepsEl.appendChild(li);
     });
     container.appendChild(stepsEl);
@@ -226,12 +275,12 @@ function renderRouteResult(aiData, route, preferences) {
   // AR button (demo)
   const arBtn = document.createElement('button');
   arBtn.className = 'btn btn-secondary ar-btn';
-  arBtn.innerHTML = '📱 Launch AR Navigation (Demo)';
+  arBtn.textContent = '📱 Launch AR Navigation (Demo)';
   arBtn.setAttribute('aria-label', 'Launch augmented reality navigation (demo mode)');
   arBtn.addEventListener('click', () => showToast('AR Navigation coming soon! Feature in development.', 'info'));
   container.appendChild(arBtn);
 
-  resultEl.innerHTML = '';
+  resultEl.textContent = '';
   resultEl.appendChild(container);
 }
 

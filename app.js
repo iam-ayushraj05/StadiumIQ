@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
 async function checkBackendStatus() {
   try {
     const healthUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      ? 'http://localhost:3001/health'
-      : '/health';
+      ? 'http://localhost:3001/api/health'
+      : '/api/health';
     const res = await fetch(healthUrl, { signal: AbortSignal.timeout(3000) });
     if (res.ok) {
       app.backendAvailable = true;
@@ -74,7 +74,13 @@ function updateLiveBadge(online) {
     if (dot) dot.style.background = '#06d6a0';
   } else {
     badge.setAttribute('aria-label', 'System status: Demo Mode');
-    badge.innerHTML = '<span class="live-dot" style="background:#ffd93d" aria-hidden="true"></span>DEMO';
+    badge.textContent = '';
+    const span = document.createElement('span');
+    span.className = 'live-dot';
+    span.style.background = '#ffd93d';
+    span.setAttribute('aria-hidden', 'true');
+    badge.appendChild(span);
+    badge.appendChild(document.createTextNode('DEMO'));
     badge.style.background = 'linear-gradient(135deg, rgba(255,217,61,0.15), rgba(255,217,61,0.05))';
     badge.style.borderColor = 'rgba(255,217,61,0.3)';
   }
